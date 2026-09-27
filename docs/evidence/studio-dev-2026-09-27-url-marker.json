@@ -1,0 +1,143 @@
+{
+  "network": "GenLayer Studio-dev",
+  "rpc": "https://studio-dev.genlayer.com/api",
+  "chain_id": 61997,
+  "observed_on": "2026-09-27",
+  "flow": "url_marker",
+  "contract": {
+    "address": "0xb20441769A60a501e8B47E196216f1456d7783c1",
+    "runner": "py-genlayer:5jycge4q8k23462jtb0b9fyey1s9qz928sz2nbrd9mg4sxqg2qng",
+    "source": "contracts/typed_grant_covenant.py",
+    "code_sha256": "063cb121ab6cd718390af9d20066066036ec983292936fa1586be0e8566b32f3",
+    "code_identity": "The deployed code in the deploy transaction record is byte-identical to the repository file at this commit."
+  },
+  "actors": {
+    "funder": "0xaF176F231F0a0E1b7E51B18d22765Df839342305",
+    "grantee": "0x32e5Df177620162E2ADeEAD8f52264a1f5A5C01E",
+    "note": "Throwaway Studio faucet accounts. No private key is stored in this repository."
+  },
+  "real_inputs": {
+    "claim_type": "url_marker",
+    "claim_target": "https://raw.githubusercontent.com/genlayerlabs/genlayer-py/dd25ef7f43e99a14b8fe42a64e01374845ad4d2d/README.md",
+    "claim_parameter": "GenLayer",
+    "claim_spec": "url_marker|https://raw.githubusercontent.com/genlayerlabs/genlayer-py/dd25ef7f43e99a14b8fe42a64e01374845ad4d2d/README.md|GenLayer",
+    "claim_fingerprint": "ff8e209d1b6c0dfca8cc217b888ed91cd6fa3031e71a323b02d4c8d8abcc75d7",
+    "evidence_url": "https://raw.githubusercontent.com/genlayerlabs/genlayer-py/dd25ef7f43e99a14b8fe42a64e01374845ad4d2d/README.md",
+    "offchain_check_of_the_same_source": {
+      "http_status": 200,
+      "body_bytes": 11035,
+      "contract_max_response_bytes": 200000,
+      "marker_occurrences": 15,
+      "body_sha256": "4b0fbe026e74b6a49045953018d89c4df932a96611be928d5821faa4f523182b",
+      "first_line": "# GenLayerPY",
+      "note": "Recorded only as a locator for the reader. The verdict below was produced inside GenVM by independent validator executions, not by this request."
+    }
+  },
+  "transactions": [
+    {
+      "function": "deploy",
+      "transaction_id": "0x9b68ba0d5c32f522983b1dd52c8c39e0f0980d682782b58ddba2417a4d3880dd",
+      "lifecycle": "Finalized",
+      "result_name": "MAJORITY_AGREE",
+      "execution": "FINISHED_WITH_RETURN"
+    },
+    {
+      "function": "create_grant",
+      "transaction_id": "0x757b6a2407db6af86a9012da7d9ec3420b7e93ad6a37cec1de586782ffadf2dd",
+      "lifecycle": "Finalized",
+      "result_name": "MAJORITY_AGREE",
+      "execution": "FINISHED_WITH_RETURN",
+      "user_value": 100
+    },
+    {
+      "function": "submit_evidence",
+      "transaction_id": "0xbf33d70975c7eb2a4f82bac9ec17e70736f487f936c237453d2e16a7482923ad",
+      "lifecycle": "Finalized",
+      "result_name": "MAJORITY_AGREE",
+      "execution": "FINISHED_WITH_RETURN"
+    },
+    {
+      "function": "review_milestone",
+      "transaction_id": "0x46936db3285f1ccc0550ad3e861f4c1c2bc0b92838fc93783d422b0e226a124b",
+      "lifecycle": "Finalized",
+      "result_name": "MAJORITY_AGREE",
+      "execution": "FINISHED_WITH_RETURN",
+      "verdict": "PASS",
+      "observed": "marker_present",
+      "reason": "url_marker_found",
+      "emitted_message": "internal call to _mark_milestone_finalized on finalization"
+    },
+    {
+      "function": "_mark_milestone_finalized",
+      "transaction_id": "0xc4e18922843040c3b90ee8f1cad25bc5e4a606a008e48b828c6cc9c40169044c",
+      "lifecycle": "Finalized",
+      "result_name": "MAJORITY_AGREE",
+      "execution": "FINISHED_WITH_RETURN",
+      "triggered_by": "0x46936db3285f1ccc0550ad3e861f4c1c2bc0b92838fc93783d422b0e226a124b",
+      "triggered_on": "finalized"
+    },
+    {
+      "function": "withdraw",
+      "transaction_id": "0xc36e9da6cf744155401032c9d6185822575369dd88110a4d581108cecf3fefaf",
+      "lifecycle": "Finalized",
+      "result_name": "MAJORITY_AGREE",
+      "execution": "FINISHED_WITH_RETURN",
+      "emitted_message": {
+        "message_type": "0 (external)",
+        "recipient": "0x32e5Df177620162E2ADeEAD8f52264a1f5A5C01E",
+        "value": 100
+      }
+    }
+  ],
+  "finalized_state_observations": [
+    {
+      "after": "create_grant",
+      "contract_balance": 100,
+      "milestone": "LOCKED / NOT_SCHEDULED"
+    },
+    {
+      "after": "submit_evidence",
+      "milestone": "SUBMITTED / NOT_SCHEDULED"
+    },
+    {
+      "after": "review_milestone",
+      "milestone": "APPROVED / PENDING_FINALITY / PASS / marker_present / url_marker_found"
+    },
+    {
+      "after": "_mark_milestone_finalized",
+      "milestone": "WITHDRAWABLE / WITHDRAWABLE / PASS / marker_present / url_marker_found"
+    },
+    {
+      "after": "withdraw",
+      "contract_balance": 0,
+      "grant_status": "COMPLETED",
+      "grant_locked": 0,
+      "milestone": "WITHDRAWAL_SCHEDULED / TRANSFER_EMITTED / PASS / marker_present / url_marker_found"
+    }
+  ],
+  "payout_observation": {
+    "contract_balance_before_create": 0,
+    "contract_balance_after_create": 100,
+    "contract_balance_before_withdraw": 100,
+    "contract_balance_after_withdraw": 0,
+    "grantee_balance_before_withdraw": "2999711684499997531",
+    "grantee_balance_after_withdraw": "2999585378499996808",
+    "fee_accounting": {
+      "status": "settled",
+      "message_allocations": 1,
+      "total_refunded": "203594800004353"
+    },
+    "note": "The covenant balance decrease from 100 to 0 is the payout proof: the external message that carried the 100 units was delivered instead of skipped. The grantee balance nets a small decrease because transaction fees in this native unit are larger than the 100-unit payout, which matches the earlier corrected GitHub run."
+  },
+  "method": {
+    "runner": ".venv/bin/python scripts/run_url_marker_demo.py --deploy --account-file artifacts/url_marker_accounts.json",
+    "state_reads": "gen_call with transaction_hash_variant=latest-final, so no recorded state is an unaccepted one",
+    "write_confirmation": "gen_getTransactionLifecycle must report Finalized and the transaction record is re-read afterwards, because a record fetched right after submission still carries in-flight consensus fields",
+    "consensus": "One rotation per transaction; every write reached MAJORITY_AGREE and FINISHED_WITH_RETURN",
+    "no_llm": "The url_marker decision compares an exact marker against a bounded body of the canonical URL; no model output is involved"
+  },
+  "related_records": {
+    "github_commit_run": "docs/evidence/studio-dev-2026-09-27.json",
+    "abandoned_preview_attempts": "Three earlier automated attempts left inert state on the temporary preview network because a stalled or reset Studio-dev request ended a run whose accounts held in-memory keys; see the abandoned-attempts section of docs/VERIFICATION.md."
+  }
+}

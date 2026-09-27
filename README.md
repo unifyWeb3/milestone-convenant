@@ -22,7 +22,8 @@ This is deliberately not a general AI grant reviewer. Objective claims are check
 - Local direct tests: **passed** (10 tests)
 - Contract lint and SDK schema validation: **passed**
 - Studio-dev code/schema probe: **passed** against GenVM `v0.3.0-rc7`
-- Studio-dev deployment and real GitHub evidence: **passed** on the corrected EVM-transfer contract; raw URL-marker rerun remains partial
+- Studio-dev deployment and real GitHub evidence: **passed** on the corrected EVM-transfer contract
+- Studio-dev real `url_marker` evidence: **passed** on a fresh deployment of the current source; the raw genlayer-py README returned `PASS` / `marker_present` and the withdrawal moved the covenant balance `100 → 0`
 - Browser UI: **build passed**; interactive wallet flow is unverified because no desktop browser is connected
 - Builder Program submission: **not submitted**
 
@@ -89,8 +90,25 @@ private key to disk):
 GENLAYER_PRIVATE_KEY=... .venv/bin/python scripts/deploy_studio_dev.py
 ```
 
-The corrected live evidence record is
-[`docs/evidence/studio-dev-2026-09-27.json`](docs/evidence/studio-dev-2026-09-27.json).
+To reproduce the public `url_marker` demo end to end, including a fresh
+deployment of the current source:
+
+```bash
+.venv/bin/python scripts/run_url_marker_demo.py --deploy
+```
+
+The script reads state with `latest-final`, confirms each write from the
+transaction record only after the lifecycle reports `Finalized`, and writes its
+raw record to the gitignored `artifacts/` directory after every step. Add
+`--account-file <path outside the repository, or under artifacts/>` to keep the
+run's throwaway test keys, so an interrupted run can be finished with
+`--contract` and `--grant-id` instead of being restarted from a new deployment.
+
+The live evidence records are
+[`docs/evidence/studio-dev-2026-09-27.json`](docs/evidence/studio-dev-2026-09-27.json)
+(`github_commit`) and
+[`docs/evidence/studio-dev-2026-09-27-url-marker.json`](docs/evidence/studio-dev-2026-09-27-url-marker.json)
+(`url_marker`).
 
 ## Repository layout
 
@@ -101,7 +119,8 @@ frontend/                         Thin browser client
 docs/                             Architecture and evidence records
 docs/evidence/                    Public live evidence records
 gltest.config.yaml                Studio-dev integration configuration
-scripts/                          Deployment helper
+scripts/deploy_studio_dev.py       Repeatable Studio-dev deployment helper
+scripts/run_url_marker_demo.py    Real url_marker demo and evidence collector
 ```
 
 ## Security boundary
