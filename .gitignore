@@ -1,0 +1,27 @@
+# Python
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+*.egg-info/
+
+# Node
+node_modules/
+frontend/dist/
+frontend/.next/
+frontend/out/
+
+# Local configuration and evidence artifacts
+.env
+.env.*
+!.env.example
+*.log
+artifacts/
+coverage/
+.DS_Store
+
+# Never commit local wallet material
+*.key
+*.private

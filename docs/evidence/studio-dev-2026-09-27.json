@@ -1,0 +1,74 @@
+{
+  "network": "GenLayer Studio-dev",
+  "rpc": "https://studio-dev.genlayer.com/api",
+  "chain_id": 61997,
+  "observed_on": "2026-09-27",
+  "contract": {
+    "address": "0xB89d3EC54BF8Bc10b328489c54Cb4C58D05b8a87",
+    "runner": "py-genlayer:5jycge4q8k23462jtb0b9fyey1s9qz928sz2nbrd9mg4sxqg2qng"
+  },
+  "actors": {
+    "funder": "0x5CbC9E0B9eB53B8d4004aE110146ed7064084D32",
+    "grantee": "0x125F1CFE274D6A7F00FEEabED01bf622F1Ff0000"
+  },
+  "real_inputs": {
+    "github_target": "genlayerlabs/genlayer-py@dd25ef7f43e99a14b8fe42a64e01374845ad4d2d",
+    "github_evidence": "https://github.com/genlayerlabs/genlayer-py/commit/dd25ef7f43e99a14b8fe42a64e01374845ad4d2d",
+    "github_observed": {
+      "verdict": "PASS",
+      "observed": "commit_present",
+      "reason": "github_commit_matches_locked_sha"
+    }
+  },
+  "transactions": [
+    {
+      "function": "deploy",
+      "transaction_id": "0x7d1c6f89803402a6a45d3c43a8829e50017b988113a52e09f095d9925aa81d0a",
+      "lifecycle": "Finalized",
+      "execution": "FINISHED_WITH_RETURN"
+    },
+    {
+      "function": "create_grant",
+      "transaction_id": "0x745dcdfb5c6e20352a618dad5285d6fa467c84f043ce8e3a161660054c7753be",
+      "lifecycle": "Finalized",
+      "execution": "FINISHED_WITH_RETURN"
+    },
+    {
+      "function": "submit_evidence",
+      "transaction_id": "0x793d1b9aa579b4d22a6bcf16829872f719dd7349bdac2ac49d3d00ad902f68cb",
+      "lifecycle": "Finalized",
+      "execution": "FINISHED_WITH_RETURN"
+    },
+    {
+      "function": "review_milestone",
+      "transaction_id": "0x87da5ae174c5a8bb36114563dcf8acff10cf7edb7b24fc040a0151ff78a0e2e1",
+      "lifecycle": "Finalized",
+      "execution": "FINISHED_WITH_RETURN",
+      "verdict": "PASS",
+      "observed": "commit_present"
+    },
+    {
+      "function": "withdraw",
+      "transaction_id": "0x0209b8f8ec96898b1f1658dc16cda2dc00a2efe48ab3684fbffe870860577897",
+      "lifecycle": "Finalized",
+      "execution": "FINISHED_WITH_RETURN"
+    }
+  ],
+  "payout_observation": {
+    "contract_balance_after_create": 100,
+    "contract_balance_before_withdraw": 100,
+    "contract_balance_after_withdraw": 0,
+    "grantee_balance_before_withdraw": "939790250249993178",
+    "grantee_balance_after_withdraw": "999585314749996808",
+    "note": "The grantee balance includes fee settlement; the covenant balance decrease from 100 to 0 is the payout proof."
+  },
+  "final_business_state": {
+    "grant_status": "COMPLETED",
+    "locked": 0,
+    "milestone_status": "WITHDRAWAL_SCHEDULED",
+    "payout_status": "TRANSFER_EMITTED",
+    "external_message_effects": {},
+    "failed_internal_message_refunds": null
+  },
+  "method": "The withdrawal uses gl.evm.contract_interface so an EOA payout is an external finalized message. The evidence was collected with bounded RPC polling because Studio-dev eth_getTransactionReceipt can remain open after consensus finalization."
+}
