@@ -21,15 +21,16 @@ No key material belongs in this repository. ``GENLAYER_FUNDER_PRIVATE_KEY`` and
 are never written to disk. Without them both actors are ephemeral Studio faucet
 accounts whose keys are discarded when the process exits, so a grant created by
 an ephemeral grantee cannot be resumed later. Because Studio-dev regularly
-stalls or drops a request, ``--account-file`` (outside the repository, or under
-the gitignored ``artifacts/`` directory) can persist the run's throwaway test
-keys so a failed run is finished with ``--contract`` and ``--grant-id`` instead
-of being restarted from a new deployment. Those keys are unencrypted test
-accounts on a temporary preview network; never use them for real funds.
+stalls or drops a request, ``--account-file`` can persist the run's throwaway
+test keys so a failed run is finished with ``--contract`` and ``--grant-id``
+instead of being restarted from a new deployment. The file must be supplied
+explicitly and must resolve outside this checkout; any path inside it,
+``artifacts/`` included, is rejected. Those keys are unencrypted test accounts
+on a temporary preview network; never use them for real funds.
 
 The raw run record is written after every step to ``artifacts/`` (gitignored)
 and echoed to stdout as JSON so it can be reviewed before it becomes public
-evidence.
+evidence. ``artifacts/`` holds public run records only and must never hold keys.
 """
 
 from __future__ import annotations
@@ -48,6 +49,8 @@ from genlayer_py import create_account, create_client
 from genlayer_py.chains import studio_devnet
 from genlayer_py.types import TransactionHashVariant
 
+# Resolved so a checkout reached through a symlinked path is still recognized
+# as the repository when an account-file path is checked against it.
 ROOT = Path(__file__).resolve().parents[1]
 CONTRACT_SOURCE = ROOT / "contracts" / "typed_grant_covenant.py"
 ARTIFACTS = ROOT / "artifacts"
@@ -312,15 +315,24 @@ def await_payout_withdrawable(client, address: str, grant_id: str, index: int) -
     return milestone
 
 
+def is_inside_repository(path: Path) -> bool:
+    """Return whether ``path`` resolves inside this checkout.
+
+    Symlinks are resolved first, so a path outside the checkout that points
+    into it is still rejected.
+    """
+    return path.is_relative_to(ROOT)
+
+
 def resolve_accounts(options) -> tuple[object, object]:
     """Return the funder and grantee accounts for this run.
 
     Keys come from the process environment, or from ``--account-file`` when the
-    caller explicitly asks for them to be persisted. An existing account file
-    is reused so a run that was interrupted can be finished with the same
-    accounts. The default run keeps every key in memory only, which means a
-    grant created by an ephemeral grantee cannot be resumed once the process
-    exits.
+    caller explicitly supplies a file outside this repository. An existing
+    account file is reused so a run that was interrupted can be finished with
+    the same accounts. The default run keeps every key in memory only, which
+    means a grant created by an ephemeral grantee cannot be resumed once the
+    process exits.
     """
     funder_key = os.environ.get("GENLAYER_FUNDER_PRIVATE_KEY")
     grantee_key = os.environ.get("GENLAYER_GRANTEE_PRIVATE_KEY")
@@ -330,12 +342,13 @@ def resolve_accounts(options) -> tuple[object, object]:
         return create_account(funder_key), create_account(grantee_key)
 
     account_file = Path(options.account_file).resolve()
-    if account_file.is_relative_to(ROOT):
-        relative = account_file.relative_to(ROOT)
-        if relative.parts[0] != "artifacts":
-            raise SystemExit(
-                "--account-file must stay outside the repository or under artifacts/"
-            )
+    if is_inside_repository(account_file):
+        raise SystemExit(
+            f"refusing to keep private keys inside the repository: {account_file}. "
+            "Pass a path outside the checkout, or use the "
+            "GENLAYER_FUNDER_PRIVATE_KEY and GENLAYER_GRANTEE_PRIVATE_KEY "
+            "environment variables. artifacts/ holds public run records only."
+        )
     if account_file.exists():
         stored = json.loads(account_file.read_text())
         progress(f"reusing demo accounts from {account_file}")
@@ -348,7 +361,7 @@ def resolve_accounts(options) -> tuple[object, object]:
         json.dumps({"funder": funder.key.hex(), "grantee": grantee.key.hex()}, indent=2) + "\n"
     )
     account_file.chmod(0o600)
-    progress(f"wrote demo account keys to {account_file} (gitignored, unencrypted test keys)")
+    progress(f"wrote demo account keys to {account_file} (outside the repository, unencrypted test keys)")
     return funder, grantee
 
 
@@ -455,8 +468,11 @@ def main() -> None:
     parser.add_argument(
         "--account-file",
         default="",
-        help="write the run's ephemeral test keys here (outside the repo, or under "
-        "artifacts/) so a failed run can be resumed; never use for real funds",
+        help="reuse or store the run's throwaway test keys in this file. It must be "
+        "supplied explicitly and must resolve outside this checkout; a path inside "
+        "the repository, artifacts/ included, is rejected. Prefer the "
+        "GENLAYER_FUNDER_PRIVATE_KEY and GENLAYER_GRANTEE_PRIVATE_KEY environment "
+        "variables; never use these accounts for real funds",
     )
     options = parser.parse_args()
     if not options.deploy and not options.contract:

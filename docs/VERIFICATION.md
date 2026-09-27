@@ -15,8 +15,8 @@ This file is intentionally a live evidence log. It must not claim completion bef
 | Real public URL evidence | `url_marker` claim on the raw genlayer-py README with marker `GenLayer` returned `PASS` / `marker_present` / `url_marker_found`; review `0x46936db3…` finalized, then withdraw `0xc36e9da6…` moved the covenant balance `100 → 0` | passed |
 | Finalized review | Corrected review `0x87da5ae1…` reached `Finalized`; milestone became `WITHDRAWABLE` | passed |
 | Withdrawal | Corrected withdraw `0x0209b8f8…` reached `Finalized`; contract balance `100 → 0`, no failed refund, grant `COMPLETED` | passed |
-| Browser UI | `npm run build` passed; interactive wallet verification is still unverified because no desktop browser is connected to this session | unverified |
-| Secret scan | Key-material scan of every file added or changed in this commit found only public transaction IDs and the documented `GENLAYER_PRIVATE_KEY` / `GENLAYER_FUNDER_PRIVATE_KEY` / `GENLAYER_GRANTEE_PRIVATE_KEY` variable names; the run's throwaway test keys live only in the gitignored `artifacts/` directory | passed |
+| Browser UI | `npm run build` passed; static checks confirm chain `61997`, the Studio-dev RPC endpoint, and the EIP-1193 methods in the built bundle; interactive wallet verification is unverified because no desktop browser is connected | unverified |
+| Secret scan | No key material is present anywhere in the checkout: the demo runner rejects any account file inside the repository, `artifacts/` holds public run records only, and the one throwaway account file a previous run had written there has been deleted. Every 32-byte hex literal in the tracked docs resolves on chain to a public transaction | passed |
 
 ## Live observation: superseded transfer path
 
@@ -73,31 +73,82 @@ reports `Finalized`; a record read immediately after submission still carries
 in-flight consensus fields and can misreport a transaction that finalized
 successfully.
 
-## Live observation: abandoned preview attempts
+## Known limitation: stranded preview grants
 
 The Studio-dev endpoint stalled, reset connections, and dropped requests
-repeatedly during this run. Three earlier automated attempts therefore ended
-while their accounts existed only in process memory, which stranded their
-grants on the temporary preview network. None of this state is released test
-GEN, and there is no cancellation path in this slice, so each entry below is
-permanent on that network:
+repeatedly during the live run. Four earlier automated attempts therefore ended
+while their accounts existed only in process memory. Their grants still hold
+test GEN on the temporary preview network, and there is no way to act on them:
 
-| Contract | Grant | Final state | Cause |
+| Contract | Grant | Re-checked state | Cause of abandonment |
 | --- | --- | --- | --- |
-| `0xB89d3EC54BF8Bc10b328489c54Cb4C58D05b8a87` | `1` | `ACTIVE`, `LOCKED`, 100 test GEN locked | the run validated `result_name` on a record read before finalization and aborted |
-| `0x6c9b5591bFCe7d7d70Ce1232F92412B749b1Ab40` | `0` | `ACTIVE`, `WITHDRAWABLE`, 100 test GEN locked | an SDK read without a timeout blocked the process indefinitely |
-| `0x98b935711AF3e0Cf8E5B2f22B7c03883052460eB` | `0` | `ACTIVE`, `WITHDRAWABLE`, 100 test GEN locked | a transient error while reading a balance between two writes |
+| `0xB89d3EC54BF8Bc10b328489c54Cb4C58D05b8a87` | `1` | `ACTIVE`, `LOCKED`, `NOT_SCHEDULED`, 100 test GEN locked, balance `100` | the run validated `result_name` on a record read before finalization and aborted |
+| `0x6c9b5591bFCe7d7d70Ce1232F92412B749b1Ab40` | `0` | `ACTIVE`, `WITHDRAWABLE`, `PASS` / `marker_present`, 100 test GEN locked, balance `100` | an SDK read without a timeout blocked the process indefinitely |
+| `0x98b935711AF3e0Cf8E5B2f22B7c03883052460eB` | `0` | `ACTIVE`, `WITHDRAWABLE`, `PASS` / `marker_present`, 100 test GEN locked, balance `100` | a transient error while reading a balance between two writes |
+| not recorded | not recorded | not observable; Studio-dev exposes no transaction index to recover the address | the endpoint reset a connection during the deployment send, before the run persisted its first transaction |
 
-A fourth attempt deployed a contract whose address was never recorded: the run
-aborted before it persisted its first transaction, and Studio-dev exposes no
-transaction index to recover the address from.
+Every state in that table was re-read from `latest-final` during the cleanup
+pass on 2026-09-27, after the completed `url_marker` run. The completed
+deployment `0xb2044176…` was re-checked in the same pass and is still
+`COMPLETED` with `locked=0` and the contract balance `0`.
 
-The demo script was changed because of these failures rather than worked
-around: every HTTP call now has a timeout, submissions are retried only while
-the sender's nonce proves the node never accepted them, observations that sit
+**Decision: the contract is left unchanged and these grants are recorded as a
+known limitation.** The slice deliberately has no cancellation or funder refund
+path, and this record does not add one. Two facts make an in-place repair
+impossible in any case: the grantee of every stranded grant is an account whose
+key was discarded, so the `withdraw` authorization cannot be exercised, and the
+funder key was discarded as well, so a funder-initiated action would be equally
+unreachable. The 100-unit payouts are therefore unrecoverable on this network
+until Studio-dev resets.
+
+Releasing a locked milestone would require a new, explicitly authorized contract
+feature — for example a funder-initiated cancellation that returns the locked
+value to the funder, restricted to milestones that have never reached
+`WITHDRAWABLE`, with its own tests and live evidence. That is a separate change
+with its own risk review, and it is not started here.
+
+The demo runner was changed because of these failures rather than worked around:
+every HTTP call now has a timeout, submissions are retried only while the
+sender's nonce proves the node never accepted them, observations that sit
 between two writes can no longer abort a run, the record is written after every
 step, and `--account-file`/`--grant-id` allow a failed run to be finished with
-the same accounts instead of being restarted from a new deployment.
+the same accounts instead of being restarted from a new deployment. Key
+persistence is now refused inside the repository, so a resumed run keeps its
+throwaway keys outside the checkout.
+
+## Browser wallet verification: unverified
+
+The interactive client flow is **not verified**. Every attempt to reach a
+desktop browser in this session returned the same blocker:
+
+```text
+browser.disconnected — No desktop browser is connected to this session.
+Open this session in the desktop app, enable the experimental browser setting,
+and wait for it to connect.
+```
+
+Without a connected browser there is no EIP-1193 provider, so wallet
+connection, the chain-61997 switch, contract configuration, and the
+create → submit → review → withdraw clicks could not be exercised. No wallet key
+was placed in the repository, and no simulated provider was used to stand in for
+the real one.
+
+What *is* established, statically, and is not a substitute for the above:
+
+- `npm run build` succeeds and emits the hashed bundle under `frontend/dist/`.
+- `genlayer-js` resolves to the pinned `2.0.0-rc.1` in `package-lock.json`.
+- The source and the built bundle both contain chain id `61997`, the
+  `https://studio-dev.genlayer.com/api` endpoint from `studioDevnet`, and the
+  `eth_requestAccounts`, `wallet_switchEthereumChain`, and
+  `gen_getTransactionLifecycle` calls the flow depends on.
+- The deployed contract the client would be pointed at is the verified
+  `url_marker` deployment `0xb20441769A60a501e8B47E196216f1456d7783c1`; the
+  client takes that address from `VITE_CONTRACT_ADDRESS` or its address field,
+  never from a key.
+
+To close this row, a reviewer needs to open the session in the desktop app with
+the experimental browser setting enabled, connect a Studio-dev funded wallet,
+and repeat the flow against that contract address.
 
 ## Evidence rules
 

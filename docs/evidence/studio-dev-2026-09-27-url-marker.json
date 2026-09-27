@@ -131,6 +131,7 @@
   },
   "method": {
     "runner": ".venv/bin/python scripts/run_url_marker_demo.py --deploy --account-file artifacts/url_marker_accounts.json",
+    "runner_note": "This is the command that produced the run. The runner no longer accepts an account file inside the repository: it rejects any path that resolves under the checkout, artifacts/ included, and the throwaway account file that run wrote there has since been deleted. A reproduction must use the GENLAYER_FUNDER_PRIVATE_KEY and GENLAYER_GRANTEE_PRIVATE_KEY environment variables, or an --account-file path outside the checkout.",
     "state_reads": "gen_call with transaction_hash_variant=latest-final, so no recorded state is an unaccepted one",
     "write_confirmation": "gen_getTransactionLifecycle must report Finalized and the transaction record is re-read afterwards, because a record fetched right after submission still carries in-flight consensus fields",
     "consensus": "One rotation per transaction; every write reached MAJORITY_AGREE and FINISHED_WITH_RETURN",
@@ -138,6 +139,6 @@
   },
   "related_records": {
     "github_commit_run": "docs/evidence/studio-dev-2026-09-27.json",
-    "abandoned_preview_attempts": "Three earlier automated attempts left inert state on the temporary preview network because a stalled or reset Studio-dev request ended a run whose accounts held in-memory keys; see the abandoned-attempts section of docs/VERIFICATION.md."
+    "stranded_preview_grants": "Four earlier automated attempts left inert state on the temporary preview network because a stalled or reset Studio-dev request ended a run whose accounts held in-memory keys. That state is unrecoverable by design of this slice: the contract has no cancellation or refund path, and both the funder and grantee keys of those attempts were discarded. Recorded as a known limitation in docs/VERIFICATION.md."
   }
 }

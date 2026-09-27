@@ -99,10 +99,16 @@ deployment of the current source:
 
 The script reads state with `latest-final`, confirms each write from the
 transaction record only after the lifecycle reports `Finalized`, and writes its
-raw record to the gitignored `artifacts/` directory after every step. Add
-`--account-file <path outside the repository, or under artifacts/>` to keep the
-run's throwaway test keys, so an interrupted run can be finished with
-`--contract` and `--grant-id` instead of being restarted from a new deployment.
+raw record to the gitignored `artifacts/` directory after every step. That
+directory holds public run records only and must never hold keys.
+
+Keys come from the `GENLAYER_FUNDER_PRIVATE_KEY` and
+`GENLAYER_GRANTEE_PRIVATE_KEY` environment variables, which the script never
+writes to disk. Because Studio-dev regularly stalls or drops a request, an
+interrupted run can be finished with the same accounts by supplying
+`--account-file <path outside this checkout>` and then `--contract` and
+`--grant-id`. Any account file that resolves inside the repository,
+`artifacts/` included, is rejected, and so is a symlink pointing into it.
 
 The live evidence records are
 [`docs/evidence/studio-dev-2026-09-27.json`](docs/evidence/studio-dev-2026-09-27.json)
@@ -126,11 +132,15 @@ scripts/run_url_marker_demo.py    Real url_marker demo and evidence collector
 ## Security boundary
 
 - No private keys or API tokens belong in this repository.
+- Keys enter the tooling only through the environment; the demo runner refuses to keep them anywhere inside the checkout and `artifacts/` is for public run records.
 - The contract accepts only bounded claim schemas and an allow-listed set of public hosts.
 - The grantee can submit only evidence matching the locked claim.
 - A technical source failure is `UNKNOWN`, not a rejection.
 - `ACCEPTED` is not finality; the UI must follow the GenLayer transaction lifecycle.
 - The contract never exposes an admin override for an approved claim.
+- There is no cancellation or refund path, so a grant whose grantee stops
+  responding keeps its funds locked. See
+  [`docs/VERIFICATION.md`](docs/VERIFICATION.md#known-limitation-stranded-preview-grants).
 
 ## License
 
