@@ -117,9 +117,12 @@ directory and set one public build-time variable:
 VITE_CONTRACT_ADDRESS=0xb20441769A60a501e8B47E196216f1456d7783c1
 ```
 
-The Vercel project uses the committed `frontend/vercel.json` (`vite` build,
-`dist` output). No wallet key or secret is needed for deployment. The reviewer
-connects their own Studio-dev wallet in the browser.
+The public reviewer deployment is:
+
+[https://milestone-convenant.vercel.app](https://milestone-convenant.vercel.app)
+
+The reviewer connects their own Studio-dev wallet in the browser. No wallet
+key or secret is needed for deployment.
 
 ## Repository layout
 

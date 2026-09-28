@@ -15,6 +15,7 @@ This file is intentionally a live evidence log. It must not claim completion bef
 | Real public URL evidence | `url_marker` claim on the raw genlayer-py README with marker `GenLayer` returned `PASS` / `marker_present` / `url_marker_found`; review `0x46936db3…` finalized, then withdraw `0xc36e9da6…` moved the covenant balance `100 → 0` | passed |
 | Finalized review | Corrected review `0x87da5ae1…` reached `Finalized`; milestone became `WITHDRAWABLE` | passed |
 | Withdrawal | Corrected withdraw `0x0209b8f8…` reached `Finalized`; contract balance `100 → 0`, no failed refund, grant `COMPLETED` | passed |
+| Vercel deployment | `https://milestone-convenant.vercel.app` returned HTTP 200; the deployed JS bundle contains the public contract address, chain `61997`, Studio-dev RPC, and EIP-1193 methods | passed |
 | Browser UI | **Manual pass, user-reported**: the user completed the wallet flow against `0xb2044176…`; the five resulting transactions were independently confirmed `FINALIZED`. The automated desktop-browser tool remained unavailable. See [`evidence/manual-browser-2026-09-28.json`](evidence/manual-browser-2026-09-28.json) | manual pass |
 | Secret scan | No key material is present anywhere in the checkout: the demo runner rejects any account file inside the repository, `artifacts/` holds public run records only, and the one throwaway account file a previous run had written there has been deleted. Every 32-byte hex literal in the tracked docs resolves on chain to a public transaction | passed |
 

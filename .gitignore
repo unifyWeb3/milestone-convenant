@@ -12,6 +12,7 @@ node_modules/
 frontend/dist/
 frontend/.next/
 frontend/out/
+.vercel/
 
 # Local configuration and evidence artifacts
 .env
