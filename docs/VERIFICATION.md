@@ -15,7 +15,7 @@ This file is intentionally a live evidence log. It must not claim completion bef
 | Real public URL evidence | `url_marker` claim on the raw genlayer-py README with marker `GenLayer` returned `PASS` / `marker_present` / `url_marker_found`; review `0x46936db3…` finalized, then withdraw `0xc36e9da6…` moved the covenant balance `100 → 0` | passed |
 | Finalized review | Corrected review `0x87da5ae1…` reached `Finalized`; milestone became `WITHDRAWABLE` | passed |
 | Withdrawal | Corrected withdraw `0x0209b8f8…` reached `Finalized`; contract balance `100 → 0`, no failed refund, grant `COMPLETED` | passed |
-| Browser UI | Client rebuilt pointed at `0xb2044176…` and served over HTTP with every asset returning `200`; static checks confirm chain `61997`, the Studio-dev RPC endpoint, and the EIP-1193 methods in the built bundle. The interactive wallet flow was re-attempted on 2026-09-28 and is still unverified: no desktop browser is connected, so no EIP-1193 provider exists | unverified |
+| Browser UI | **Manual pass, user-reported**: the user completed the wallet flow against `0xb2044176…`; the five resulting transactions were independently confirmed `FINALIZED`. The automated desktop-browser tool remained unavailable. See [`evidence/manual-browser-2026-09-28.json`](evidence/manual-browser-2026-09-28.json) | manual pass |
 | Secret scan | No key material is present anywhere in the checkout: the demo runner rejects any account file inside the repository, `artifacts/` holds public run records only, and the one throwaway account file a previous run had written there has been deleted. Every 32-byte hex literal in the tracked docs resolves on chain to a public transaction | passed |
 
 ## Live observation: superseded transfer path
@@ -116,64 +116,41 @@ the same accounts instead of being restarted from a new deployment. Key
 persistence is now refused inside the repository, so a resumed run keeps its
 throwaway keys outside the checkout.
 
-## Browser wallet verification: unverified
+## Browser wallet verification: manual pass
 
-The interactive client flow is **not verified**, and nothing in this section
-should be read as a wallet result. The attempt was repeated on 2026-09-28,
-after an environment restart, and every call to reach a desktop browser in this
-session returned the same blocker:
+The user manually completed the browser flow against the deployed contract
+`0xb20441769A60a501e8B47E196216f1456d7783c1` on 2026-09-28:
 
-```text
-browser.disconnected — No desktop browser is connected to this session.
-Open this session in the desktop app, enable the experimental browser setting,
-and wait for it to connect.
-```
+- funder: `0x3d5915888E60CdaFFbB1F94DeeB71694F5de2a5d`
+- grantee: `0x3211d1419709682b81c53CC51cb63622E25488d3`
+- successful grant: `2`
+- claim: `github_commit` for
+  `genlayerlabs/genlayer-py@dd25ef7f43e99a14b8fe42a64e01374845ad4d2d`
 
-Connecting the browser is a desktop-side action that this environment cannot
-perform, so the attempt stopped at the blocker. Without a connected browser
-there is no EIP-1193 provider, and therefore no observation of any of the
-following: wallet connection, the chain-61997 switch or `wallet_addEthereumChain`,
-contract configuration, or the create → submit → review → withdraw clicks and
-their lifecycle and error rendering. No wallet key was placed in the repository,
-and no simulated provider was substituted for a real one.
+The user reported successful wallet connection, chain-61997 interaction,
+contract configuration, and the create → submit → review → withdraw flow. The
+agent's desktop-browser tool remained unavailable, so this is explicitly a
+user-reported manual result rather than an agent-observed wallet result.
 
-### What was done instead, and what it does not prove
+The five resulting transactions were independently read from Studio-dev
+Explorer and are all `FINALIZED`:
 
-The client was prepared so that a browser test can run without further setup.
-These are build and transport observations, not wallet observations:
+- create: `0x9f44f6525d5c59c6216e706c5d361e7053354c6b6da9ec458416ec81ad3b91f4`
+- submit: `0x1765edb891c5de4ca42933ada398fa0dda7477a3edbd81337fa7c833756eceab`
+- review: `0xe7e22165127a5500f6995856c210dd138f404f6aaff553ab7ce411704a308d1e`
+- withdraw: `0xcdb18395381c57de6a7b4b1f9afa4b4368d949e0412df387c6567f82173b801c`
+- external payout: `0x37782ec6dbfca3c133e91680f483337b57b07fdbf822fdb187c8fcb8d0d32649`
 
-- `frontend/.env` (gitignored, public value only) pins
-  `VITE_CONTRACT_ADDRESS=0xb20441769A60a501e8B47E196216f1456d7783c1`, the
-  verified `url_marker` deployment. `npm run build` succeeds and the address is
-  present in the emitted bundle, so the client opens already pointed at the
-  contract that this repository's evidence covers.
-- The built client was served with `vite preview` on `127.0.0.1:4173` and every
-  asset resolved: `/` → `200 text/html`, `/assets/index-*.js` → `200
-  text/javascript` (621774 bytes), `/assets/ccip-*.js` → `200
-  text/javascript`, `/assets/index-*.css` → `200 text/css`. No asset 404s and
-  no empty chunk, so a browser test will not fail on asset wiring. The preview
-  server was stopped afterwards.
-- `genlayer-js` resolves to the pinned `2.0.0-rc.1` in `package-lock.json`.
-- The source and the built bundle both contain chain id `61997`, the
-  `https://studio-dev.genlayer.com/api` endpoint from `studioDevnet`, and the
-  `eth_requestAccounts`, `wallet_switchEthereumChain`, and
-  `gen_getTransactionLifecycle` calls the flow depends on.
+The deployed contract's final state confirms grant `2` is `COMPLETED` with
+`locked=0` and milestone status `WITHDRAWAL_SCHEDULED` /
+`TRANSFER_EMITTED`. The contract currently still holds 100 because a separate
+grant `1` remains `ACTIVE` / `LOCKED`; that grant is outside this successful
+flow. The compact record is in
+[`evidence/manual-browser-2026-09-28.json`](evidence/manual-browser-2026-09-28.json).
 
-None of this exercises a wallet, a signature, a lifecycle transition, or the
-error paths, so the browser row stays `unverified`. No defect was found in the
-client by these checks, and no contract or live evidence flow was changed on
-their basis.
-
-To close this row, a reviewer needs to open the session in the desktop app with
-the experimental browser setting enabled, connect a funded Studio-dev wallet on
-chain 61997, and repeat the flow. The client is already pointed at
-`0xb2044176…`, so the flow can start immediately. The contract's state for a
-fresh grant was re-read on 2026-09-28: `grant_count=1`, balance `0`, grant `0`
-`COMPLETED` with `locked=0` and milestone `WITHDRAWAL_SCHEDULED` /
-`TRANSFER_EMITTED`. A new grant therefore takes grant id `1`. Note that the
-grantee of the completed grant, `0x32e5Df17…`, is an account whose key was
-discarded when its run finished, so a browser test must use its own funded
-wallet for both the funder and the grantee role.
+The automated checks remain useful but distinct: the frontend build and asset
+serving passed, while the browser tool itself remained unavailable. No wallet
+key was placed in the repository and no simulated provider was substituted.
 
 ## Evidence rules
 

@@ -1,4 +1,4 @@
-# Typed Grant Covenant
+# Milestone Covenant
 
 A small public GenLayer Builder Program contribution for grant-tool builders.
 
@@ -24,7 +24,7 @@ This is deliberately not a general AI grant reviewer. Objective claims are check
 - Studio-dev code/schema probe: **passed** against GenVM `v0.3.0-rc7`
 - Studio-dev deployment and real GitHub evidence: **passed** on the corrected EVM-transfer contract
 - Studio-dev real `url_marker` evidence: **passed** on a fresh deployment of the current source; the raw genlayer-py README returned `PASS` / `marker_present` and the withdrawal moved the covenant balance `100 → 0`
-- Browser UI: **build passed**; interactive wallet flow is unverified because no desktop browser is connected
+- Browser UI: **manual pass, user-reported**; the user completed the wallet flow against `0xb2044176…`, and the five resulting Studio-dev transactions were independently confirmed `FINALIZED`. Automated desktop-browser verification remains unavailable.
 - Builder Program submission: **not submitted**
 
 A transaction broadcast, a passing unit test, or an LLM response is not treated as completion evidence. See [`docs/VERIFICATION.md`](docs/VERIFICATION.md).
@@ -112,9 +112,11 @@ interrupted run can be finished with the same accounts by supplying
 
 The live evidence records are
 [`docs/evidence/studio-dev-2026-09-27.json`](docs/evidence/studio-dev-2026-09-27.json)
-(`github_commit`) and
+(`github_commit`),
 [`docs/evidence/studio-dev-2026-09-27-url-marker.json`](docs/evidence/studio-dev-2026-09-27-url-marker.json)
-(`url_marker`).
+(`url_marker`), and
+[`docs/evidence/manual-browser-2026-09-28.json`](docs/evidence/manual-browser-2026-09-28.json)
+(user-reported manual browser flow with independent transaction checks).
 
 ## Repository layout
 

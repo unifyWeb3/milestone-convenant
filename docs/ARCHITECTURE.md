@@ -1,4 +1,4 @@
-# Typed Grant Covenant architecture
+# Milestone Covenant architecture
 
 ## Boundary
 

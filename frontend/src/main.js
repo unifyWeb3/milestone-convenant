@@ -5,7 +5,7 @@ import "./style.css";
 const CHAIN_ID = 61997;
 const CHAIN_ID_HEX = `0x${CHAIN_ID.toString(16)}`;
 const EXPLORER = "https://explorer-studio-dev.genlayer.com";
-const STORAGE_KEY = "typed-grant-covenant.contract";
+const STORAGE_KEY = "milestone-covenant.contract";
 
 const state = {
   provider: null,
@@ -22,7 +22,7 @@ app.innerHTML = `
   <header class="topbar">
     <div>
       <p class="eyebrow">GENLAYER BUILDER PROGRAM · STUDIO-DEV PREVIEW</p>
-      <h1>Typed Grant Covenant</h1>
+      <h1>Milestone Covenant</h1>
       <p class="lede">Machine-checkable milestones. Validator-backed evidence. Finality-aware test GEN.</p>
     </div>
     <div class="network-pill"><span class="dot"></span> Studio-dev · chain 61997</div>
@@ -120,7 +120,7 @@ app.innerHTML = `
   </main>
 
   <footer>
-    <span>Typed Grant Covenant · Studio-dev preview</span>
+    <span>Milestone Covenant · Studio-dev preview</span>
     <a href="${EXPLORER}" target="_blank" rel="noreferrer">Open explorer ↗</a>
   </footer>
 `;

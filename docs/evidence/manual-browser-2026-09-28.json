@@ -1,0 +1,77 @@
+{
+  "network": "GenLayer Studio-dev",
+  "rpc": "https://studio-dev.genlayer.com/api",
+  "chain_id": 61997,
+  "observed_on": "2026-09-28",
+  "verification_class": "user_reported_manual_browser_plus_independent_explorer_check",
+  "contract": {
+    "address": "0xb20441769A60a501e8B47E196216f1456d7783c1",
+    "runner": "py-genlayer:5jycge4q8k23462jtb0b9fyey1s9qz928sz2nbrd9mg4sxqg2qng"
+  },
+  "actors": {
+    "funder": "0x3d5915888E60CdaFFbB1F94DeeB71694F5de2a5d",
+    "grantee": "0x3211d1419709682b81c53CC51cb63622E25488d3"
+  },
+  "manual_flow": {
+    "grant_id": "2",
+    "claim_type": "github_commit",
+    "claim_target": "genlayerlabs/genlayer-py@dd25ef7f43e99a14b8fe42a64e01374845ad4d2d",
+    "evidence_url": "https://github.com/genlayerlabs/genlayer-py/commit/dd25ef7f43e99a14b8fe42a64e01374845ad4d2d",
+    "reported_result": "The user reported that the browser wallet flow completed successfully. The agent's browser tool remained unavailable, so this is not an agent-observed wallet result."
+  },
+  "transactions": [
+    {
+      "function": "create_grant",
+      "transaction_id": "0x9f44f6525d5c59c6216e706c5d361e7053354c6b6da9ec458416ec81ad3b91f4",
+      "from": "0x3d5915888E60CdaFFbB1F94DeeB71694F5de2a5d",
+      "to": "0xb20441769A60a501e8B47E196216f1456d7783c1",
+      "value": 100,
+      "status": "FINALIZED"
+    },
+    {
+      "function": "submit_evidence",
+      "transaction_id": "0x1765edb891c5de4ca42933ada398fa0dda7477a3edbd81337fa7c833756eceab",
+      "from": "0x3211d1419709682b81c53CC51cb63622E25488d3",
+      "to": "0xb20441769A60a501e8B47E196216f1456d7783c1",
+      "status": "FINALIZED"
+    },
+    {
+      "function": "review_milestone",
+      "transaction_id": "0xe7e22165127a5500f6995856c210dd138f404f6aaff553ab7ce411704a308d1e",
+      "from": "0x3211d1419709682b81c53CC51cb63622E25488d3",
+      "to": "0xb20441769A60a501e8B47E196216f1456d7783c1",
+      "status": "FINALIZED"
+    },
+    {
+      "function": "withdraw",
+      "transaction_id": "0xcdb18395381c57de6a7b4b1f9afa4b4368d949e0412df387c6567f82173b801c",
+      "from": "0x3211d1419709682b81c53CC51cb63622E25488d3",
+      "to": "0xb20441769A60a501e8B47E196216f1456d7783c1",
+      "status": "FINALIZED"
+    },
+    {
+      "function": "external_payout",
+      "transaction_id": "0x37782ec6dbfca3c133e91680f483337b57b07fdbf822fdb187c8fcb8d0d32649",
+      "from": "0xb20441769A60a501e8B47E196216f1456d7783c1",
+      "to": "0x3211d1419709682b81c53CC51cb63622E25488d3",
+      "value": 100,
+      "status": "FINALIZED"
+    }
+  ],
+  "final_state": {
+    "grant_id": "2",
+    "grant_status": "COMPLETED",
+    "grant_locked": 0,
+    "milestone_status": "WITHDRAWAL_SCHEDULED",
+    "payout_status": "TRANSFER_EMITTED",
+    "contract_balance_current": 100,
+    "contract_balance_note": "The contract still holds 100 because a separate grant 1 is ACTIVE/LOCKED. Grant 2 itself released its 100-unit payout.",
+    "separate_grant_1": {
+      "status": "ACTIVE",
+      "locked": 100,
+      "milestone_status": "LOCKED",
+      "note": "Not part of the reported successful manual flow."
+    }
+  },
+  "independent_check": "All five listed transactions were read from Studio-dev Explorer with status FINALIZED; the contract state was read from the deployed contract and shows grant 2 COMPLETED with locked=0. The agent did not independently operate the user's wallet."
+}
