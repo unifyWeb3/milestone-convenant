@@ -295,7 +295,16 @@ async function createGrant(event) {
       ],
       payout,
     );
-    $("grant-id").value = "0";
+    const { client, address } = requireClient();
+    const grantCount = BigInt(
+      await client.readContract({
+        address,
+        functionName: "get_grant_count",
+        args: [],
+        account: walletAccount(),
+      }),
+    );
+    $("grant-id").value = (grantCount - 1n).toString();
     await refreshGrant();
   } catch (error) {
     setMessage(error?.shortMessage || error?.message || String(error), "bad");
