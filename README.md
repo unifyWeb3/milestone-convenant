@@ -110,13 +110,16 @@ interrupted run can be finished with the same accounts by supplying
 `--grant-id`. Any account file that resolves inside the repository,
 `artifacts/` included, is rejected, and so is a symlink pointing into it.
 
-The live evidence records are
-[`docs/evidence/studio-dev-2026-09-27.json`](docs/evidence/studio-dev-2026-09-27.json)
-(`github_commit`),
-[`docs/evidence/studio-dev-2026-09-27-url-marker.json`](docs/evidence/studio-dev-2026-09-27-url-marker.json)
-(`url_marker`), and
-[`docs/evidence/manual-browser-2026-09-28.json`](docs/evidence/manual-browser-2026-09-28.json)
-(user-reported manual browser flow with independent transaction checks).
+For a public reviewer deployment on Vercel, use `frontend/` as the project root
+directory and set one public build-time variable:
+
+```text
+VITE_CONTRACT_ADDRESS=0xb20441769A60a501e8B47E196216f1456d7783c1
+```
+
+The Vercel project uses the committed `frontend/vercel.json` (`vite` build,
+`dist` output). No wallet key or secret is needed for deployment. The reviewer
+connects their own Studio-dev wallet in the browser.
 
 ## Repository layout
 
